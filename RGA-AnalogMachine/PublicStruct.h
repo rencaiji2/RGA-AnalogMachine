@@ -1,0 +1,4 @@
+#ifndef PUBLICSTRUCT_H
+#define PUBLICSTRUCT_H
+
+#endif // PUBLICSTRUCT_H

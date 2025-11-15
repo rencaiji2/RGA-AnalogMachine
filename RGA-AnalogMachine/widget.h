@@ -2,6 +2,8 @@
 #define WIDGET_H
 
 #include <QWidget>
+#include "TcpServer.h"
+#include <QTimer>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Widget; }
@@ -14,6 +16,12 @@ class Widget : public QWidget
 public:
     Widget(QWidget *parent = nullptr);
     ~Widget();
+
+private:
+    TcpServer m_tcpServer;
+    QTimer *m_sendTimer;
+
+    void on_sendTimer_out();
 
 private:
     Ui::Widget *ui;
