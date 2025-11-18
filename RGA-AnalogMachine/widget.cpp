@@ -21,7 +21,7 @@ void Widget::on_sendTimer_out()
 {
     if(!m_tcpServer.getClientIds().isEmpty())
     {
-        m_tcpServer.sendMessage(m_tcpServer.getClientIds()[0],"112");
+        m_tcpServer.sendMessage(m_tcpServer.getClientIds()[0],m_agreementZXJC.Splicing());
     }
 }
 

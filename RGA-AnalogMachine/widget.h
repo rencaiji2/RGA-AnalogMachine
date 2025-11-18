@@ -4,6 +4,7 @@
 #include <QWidget>
 #include "TcpServer.h"
 #include <QTimer>
+#include "PublicStruct.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Widget; }
@@ -20,6 +21,7 @@ public:
 private:
     TcpServer m_tcpServer;
     QTimer *m_sendTimer;
+    AgreementZXJC m_agreementZXJC;
 
     void on_sendTimer_out();
 
