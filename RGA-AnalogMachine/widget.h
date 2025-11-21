@@ -24,6 +24,7 @@ private:
     AgreementZXJC m_agreementZXJC;
 
     void on_sendTimer_out();
+    void handleUiSetting();   //处理界面上的设置项
 
 private:
     Ui::Widget *ui;
