@@ -6,7 +6,7 @@ Widget::Widget(QWidget *parent)
     , ui(new Ui::Widget)
 {
     ui->setupUi(this);
-    m_tcpServer.startServer("127.0.0.1",6000);
+    m_tcpServer.startServer("127.0.0.1",6001);
     m_sendTimer = new QTimer(this);
     connect(m_sendTimer, &QTimer::timeout, this, &Widget::on_sendTimer_out, Qt::UniqueConnection);
     m_sendTimer->start(1000);
@@ -21,11 +21,18 @@ void Widget::on_sendTimer_out()
 {
     if(!m_tcpServer.getClientIds().isEmpty())
     {
-        if(ui->cb_useUIsetting->isChecked())
+        if(0)
         {
-            handleUiSetting();
+            if(ui->cb_useUIsetting->isChecked())
+            {
+                handleUiSetting();
+            }
+            m_tcpServer.sendMessage(m_tcpServer.getClientIds()[0],m_agreementZXJC.Splicing());
         }
-        m_tcpServer.sendMessage(m_tcpServer.getClientIds()[0],m_agreementZXJC.Splicing());
+        else
+        {
+            m_tcpServer.sendMessage(m_tcpServer.getClientIds()[0],"SV,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18");
+        }
     }
 }
 
