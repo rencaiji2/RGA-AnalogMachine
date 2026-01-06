@@ -18,13 +18,19 @@ public:
     Widget(QWidget *parent = nullptr);
     ~Widget();
 
+private slots:
+    void on_pushButton_clicked();
+
 private:
     TcpServer m_tcpServer;
+    TcpServer m_tcpServer_2;
     QTimer *m_sendTimer;
     AgreementZXJC m_agreementZXJC;
+    QStringList tcpData_1;
 
     void on_sendTimer_out();
     void handleUiSetting();   //处理界面上的设置项
+    void initTcpData_1();
 
 private:
     Ui::Widget *ui;
