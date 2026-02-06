@@ -78,4 +78,10 @@ void Widget::on_pushButton_clicked()
 
     tcpData_1[267] = ui->lineEdit_CH6_Lot->text();
     tcpData_1[268] = ui->lineEdit_CH6_SLot->text();
+
+    tcpData_1[272] = ui->lineEdit_LLA_Lot->text();
+    tcpData_1[273] = ui->lineEdit_LLA_SLot->text();
+
+    tcpData_1[277] = ui->lineEdit_LLB_Lot->text();
+    tcpData_1[278] = ui->lineEdit_LLB_SLot->text();
 }
