@@ -12,11 +12,35 @@ Widget::Widget(QWidget *parent)
     m_sendTimer = new QTimer(this);
     connect(m_sendTimer, &QTimer::timeout, this, &Widget::on_sendTimer_out, Qt::UniqueConnection);
     m_sendTimer->start(100);
+
+    m_testTimer = new QTimer(this);
+    connect(m_sendTimer, &QTimer::timeout, this, &Widget::on_testTimer_out, Qt::UniqueConnection);
+    //m_testTimer->start(100);
 }
 
 Widget::~Widget()
 {
     delete ui;
+}
+
+void Widget::on_testTimer_out()
+{
+    static int lc=0;
+    static bool isOpen = true;
+    lc++;
+    if(lc>=8 && isOpen==true)
+    {
+        lc = 0;
+        isOpen = false;
+        ui->cb_ch1open->setChecked(true);
+    }
+
+    if(lc>=20 && isOpen==false)
+    {
+        lc = 0;
+        isOpen = true;
+        ui->cb_ch1open->setChecked(false);
+    }
 }
 
 void Widget::on_sendTimer_out()

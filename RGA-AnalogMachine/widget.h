@@ -25,10 +25,12 @@ private:
     TcpServer m_tcpServer;
     TcpServer m_tcpServer_2;
     QTimer *m_sendTimer;
+    QTimer *m_testTimer;
     AgreementZXJC m_agreementZXJC;
     QStringList tcpData_1;
 
     void on_sendTimer_out();
+    void on_testTimer_out();
     void handleUiSetting();   //处理界面上的设置项
     void initTcpData_1();
 
