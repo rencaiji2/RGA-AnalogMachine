@@ -332,7 +332,7 @@
      <property name="geometry">
       <rect>
        <x>70</x>
-       <y>310</y>
+       <y>320</y>
        <width>113</width>
        <height>20</height>
       </rect>
@@ -357,8 +357,8 @@
     <widget class="QPushButton" name="pushButton">
      <property name="geometry">
       <rect>
-       <x>220</x>
-       <y>270</y>
+       <x>600</x>
+       <y>130</y>
        <width>80</width>
        <height>18</height>
       </rect>
@@ -495,6 +495,162 @@
      </property>
      <property name="text">
       <string>N</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_13">
+     <property name="geometry">
+      <rect>
+       <x>220</x>
+       <y>170</y>
+       <width>91</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>CH1 Step Index</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="lineEdit_CH1_StepIndex">
+     <property name="geometry">
+      <rect>
+       <x>310</x>
+       <y>170</y>
+       <width>113</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_Ch1_StepIndex">
+     <property name="geometry">
+      <rect>
+       <x>450</x>
+       <y>170</y>
+       <width>80</width>
+       <height>18</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>切换步骤</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_Ch3_StepIndex">
+     <property name="geometry">
+      <rect>
+       <x>450</x>
+       <y>230</y>
+       <width>80</width>
+       <height>18</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>切换步骤</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="lineEdit_CH3_StepIndex">
+     <property name="geometry">
+      <rect>
+       <x>310</x>
+       <y>230</y>
+       <width>113</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_27">
+     <property name="geometry">
+      <rect>
+       <x>220</x>
+       <y>230</y>
+       <width>91</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>CH3 Step Index</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_Ch4_StepIndex">
+     <property name="geometry">
+      <rect>
+       <x>450</x>
+       <y>280</y>
+       <width>80</width>
+       <height>18</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>切换步骤</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="lineEdit_CH4_StepIndex">
+     <property name="geometry">
+      <rect>
+       <x>310</x>
+       <y>280</y>
+       <width>113</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_28">
+     <property name="geometry">
+      <rect>
+       <x>220</x>
+       <y>280</y>
+       <width>91</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>CH4 Step Index</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_Ch6_StepIndex6">
+     <property name="geometry">
+      <rect>
+       <x>450</x>
+       <y>330</y>
+       <width>80</width>
+       <height>18</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>切换步骤</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="lineEdit_CH6_StepIndex">
+     <property name="geometry">
+      <rect>
+       <x>310</x>
+       <y>330</y>
+       <width>113</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_29">
+     <property name="geometry">
+      <rect>
+       <x>220</x>
+       <y>330</y>
+       <width>91</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>CH6 Step Index</string>
      </property>
     </widget>
    </widget>
