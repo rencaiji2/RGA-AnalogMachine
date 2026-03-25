@@ -61,7 +61,7 @@ void Widget::on_sendTimer_out()
 //    }
     if(!m_tcpServer_2.getClientIds().isEmpty())
     {
-        m_tcpServer_2.sendMessage(m_tcpServer.getClientIds()[0],"SV,1,2,3,4,5,6,7,8,3,3,11,12,13,14,15,16,17,18");
+        m_tcpServer_2.sendMessage(m_tcpServer.getClientIds()[0],"SV,1,2,3,4,5,6,7,8,3,3,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26");
     }
 }
 
