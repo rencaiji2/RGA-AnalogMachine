@@ -14,8 +14,8 @@ Widget::Widget(QWidget *parent)
     m_sendTimer->start(1000);
 
     m_testTimer = new QTimer(this);
-    connect(m_sendTimer, &QTimer::timeout, this, &Widget::on_testTimer_out, Qt::UniqueConnection);
-    m_testTimer->start(100);
+    connect(m_testTimer, &QTimer::timeout, this, &Widget::on_testTimer_out, Qt::UniqueConnection);
+    m_testTimer->start(200);
 }
 
 Widget::~Widget()
@@ -25,21 +25,33 @@ Widget::~Widget()
 
 void Widget::on_testTimer_out()
 {
-    static int lc=0;
-    static bool isOpen = true;
-    lc++;
-    if(lc>=8 && isOpen==true)
-    {
-        lc = 0;
-        isOpen = false;
-        ui->cb_ch1open->setChecked(true);
-    }
+//    static int lc=0;
+//    static bool isOpen = true;
+//    lc++;
+//    if(lc>=8 && isOpen==true)
+//    {
+//        lc = 0;
+//        isOpen = false;
+//        ui->cb_ch1open->setChecked(true);
+//    }
 
-    if(lc>=20 && isOpen==false)
+//    if(lc>=20 && isOpen==false)
+//    {
+//        lc = 0;
+//        isOpen = true;
+//        ui->cb_ch1open->setChecked(false);
+//    }
+    QString str = "SV,1,2,3,4,5,6,7,8,3,3,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28";
+    QStringList strList = str.split(",");
+    static int xx = 0;
+    xx++;
+    strList[28] = QString::number(xx);
+    QString str2 = strList.join(",");
+    str2+="\r\n";
+    qDebug()<<str2;
+    if(!m_tcpServer_2.getClientIds().isEmpty())
     {
-        lc = 0;
-        isOpen = true;
-        ui->cb_ch1open->setChecked(false);
+        m_tcpServer_2.sendMessage(m_tcpServer.getClientIds()[0],str2);
     }
 }
 
@@ -59,10 +71,10 @@ void Widget::on_sendTimer_out()
 //        }
 //        m_tcpServer.sendMessage(m_tcpServer.getClientIds()[0],tcpData_1.join(","));
 //    }
-    if(!m_tcpServer_2.getClientIds().isEmpty())
-    {
-        m_tcpServer_2.sendMessage(m_tcpServer.getClientIds()[0],"SV,1,2,3,4,5,6,7,8,3,3,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26");
-    }
+//    if(!m_tcpServer_2.getClientIds().isEmpty())
+//    {
+//        m_tcpServer_2.sendMessage(m_tcpServer.getClientIds()[0],"SV,1,2,3,4,5,6,7,8,3,3,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28");
+//    }
 }
 
 void Widget::handleUiSetting()
@@ -136,9 +148,9 @@ void Widget::on_cb_ch1open_clicked(bool checked)
         tcpData_1_2[51] = "235849";                          //CEID  关闭
     }
     tcpData_1_2[52] = "N";   //RPTID
-    tcpData_1_2[53] = "N";   //RecipeNameEQ
-    tcpData_1_2[54] = ui->lineEdit_CH1_Lot->text();   //LotID
-    tcpData_1_2[55] = ui->lineEdit_CH1_SLot->text();   //SlotID
+    //tcpData_1_2[53] = "N";   //RecipeNameEQ
+    tcpData_1_2[53] = ui->lineEdit_CH1_Lot->text();   //LotID
+    tcpData_1_2[54] = ui->lineEdit_CH1_SLot->text();   //SlotID
     tcpData_1_2[56] = "N";   //WaferID
     tcpData_1_2[57] = "N";   //StepIndex
     if(!m_tcpServer.getClientIds().isEmpty())
@@ -155,9 +167,9 @@ void Widget::on_cb_ch3open_clicked(bool checked)
         tcpData_1_2[51] = "235855";  //CEID  关闭
     }
     tcpData_1_2[52] = "N";   //RPTID
-    tcpData_1_2[53] = "N";   //RecipeNameEQ
-    tcpData_1_2[54] = ui->lineEdit_CH3_Lot->text();   //LotID
-    tcpData_1_2[55] = ui->lineEdit_CH3_SLot->text();   //SlotID
+    //tcpData_1_2[53] = "N";   //RecipeNameEQ
+    tcpData_1_2[53] = ui->lineEdit_CH3_Lot->text();   //LotID
+    tcpData_1_2[54] = ui->lineEdit_CH3_SLot->text();   //SlotID
     tcpData_1_2[56] = "N";   //WaferID
     tcpData_1_2[57] = "N";   //StepIndex
     if(!m_tcpServer.getClientIds().isEmpty())
@@ -174,9 +186,9 @@ void Widget::on_cb_ch4open_clicked(bool checked)
         tcpData_1_2[51] = "235861";  //CEID  关闭
     }
     tcpData_1_2[52] = "N";   //RPTID
-    tcpData_1_2[53] = "N";   //RecipeNameEQ
-    tcpData_1_2[54] = ui->lineEdit_CH4_Lot->text();   //LotID
-    tcpData_1_2[55] = ui->lineEdit_CH4_SLot->text();   //SlotID
+    //tcpData_1_2[53] = "N";   //RecipeNameEQ
+    tcpData_1_2[53] = ui->lineEdit_CH4_Lot->text();   //LotID
+    tcpData_1_2[54] = ui->lineEdit_CH4_SLot->text();   //SlotID
     tcpData_1_2[56] = "N";   //WaferID
     tcpData_1_2[57] = "N";   //StepIndex
     if(!m_tcpServer.getClientIds().isEmpty())
@@ -193,9 +205,9 @@ void Widget::on_cb_ch6open_clicked(bool checked)
         tcpData_1_2[51] = "235867";  //CEID  关闭
     }
     tcpData_1_2[52] = "N";   //RPTID
-    tcpData_1_2[53] = "N";   //RecipeNameEQ
-    tcpData_1_2[54] = ui->lineEdit_CH6_Lot->text();   //LotID
-    tcpData_1_2[55] = ui->lineEdit_CH6_SLot->text();   //SlotID
+    //tcpData_1_2[53] = "N";   //RecipeNameEQ
+    tcpData_1_2[53] = ui->lineEdit_CH6_Lot->text();   //LotID
+    tcpData_1_2[54] = ui->lineEdit_CH6_SLot->text();   //SlotID
     tcpData_1_2[56] = "N";   //WaferID
     tcpData_1_2[57] = "N";   //StepIndex
     if(!m_tcpServer.getClientIds().isEmpty())
@@ -212,9 +224,9 @@ void Widget::on_cb_LAopen_clicked(bool checked)
         tcpData_1_2[51] = "235841";  //CEID  关闭
     }
     tcpData_1_2[52] = "N";   //RPTID
-    tcpData_1_2[53] = "N";   //RecipeNameEQ
-    tcpData_1_2[54] = ui->lineEdit_LLA_Lot->text();   //LotID
-    tcpData_1_2[55] = ui->lineEdit_LLA_SLot->text();   //SlotID
+    //tcpData_1_2[53] = "N";   //RecipeNameEQ
+    tcpData_1_2[53] = ui->lineEdit_LLA_Lot->text();   //LotID
+    tcpData_1_2[54] = ui->lineEdit_LLA_SLot->text();   //SlotID
     tcpData_1_2[56] = "N";   //WaferID
     tcpData_1_2[57] = "N";   //StepIndex
     if(!m_tcpServer.getClientIds().isEmpty())
@@ -231,9 +243,9 @@ void Widget::on_cb_LBopen_clicked(bool checked)
         tcpData_1_2[51] = "235843";                        //CEID  关闭
     }
     tcpData_1_2[52] = "N";                            //RPTID
-    tcpData_1_2[53] = "N";                            //RecipeNameEQ
-    tcpData_1_2[54] = ui->lineEdit_LLB_Lot->text();   //LotID
-    tcpData_1_2[55] = ui->lineEdit_LLB_SLot->text();  //SlotID
+    //tcpData_1_2[53] = "N";                            //RecipeNameEQ
+    tcpData_1_2[53] = ui->lineEdit_LLB_Lot->text();   //LotID
+    tcpData_1_2[54] = ui->lineEdit_LLB_SLot->text();  //SlotID
     tcpData_1_2[56] = "N";                            //WaferID
     tcpData_1_2[57] = "N";                            //StepIndex
     if(!m_tcpServer.getClientIds().isEmpty())
