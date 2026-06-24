@@ -653,6 +653,19 @@
       <string>CH6 Step Index</string>
      </property>
     </widget>
+    <widget class="QCheckBox" name="cb_chDstart">
+     <property name="geometry">
+      <rect>
+       <x>410</x>
+       <y>30</y>
+       <width>121</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>chDreceipestart</string>
+     </property>
+    </widget>
    </widget>
   </widget>
  </widget>

@@ -161,10 +161,10 @@ void Widget::on_cb_ch1open_clicked(bool checked)
 
 void Widget::on_cb_ch3open_clicked(bool checked)
 {
-    tcpData_1_2[51] = "235856";  //CEID  默认为打开
+    tcpData_1_2[51] = "312320700";  //CEID  默认为打开
     if(checked == false)
     {
-        tcpData_1_2[51] = "235855";  //CEID  关闭
+        tcpData_1_2[51] = "312320701";  //CEID  关闭
     }
     tcpData_1_2[52] = "N";   //RPTID
     //tcpData_1_2[53] = "N";   //RecipeNameEQ
@@ -180,10 +180,10 @@ void Widget::on_cb_ch3open_clicked(bool checked)
 
 void Widget::on_cb_ch4open_clicked(bool checked)
 {
-    tcpData_1_2[51] = "235862";  //CEID  默认为打开
+    tcpData_1_2[51] = "312420700";  //CEID  默认为打开
     if(checked == false)
     {
-        tcpData_1_2[51] = "235861";  //CEID  关闭
+        tcpData_1_2[51] = "312420701";  //CEID  关闭
     }
     tcpData_1_2[52] = "N";   //RPTID
     //tcpData_1_2[53] = "N";   //RecipeNameEQ
@@ -199,10 +199,10 @@ void Widget::on_cb_ch4open_clicked(bool checked)
 
 void Widget::on_cb_ch6open_clicked(bool checked)
 {
-    tcpData_1_2[51] = "235868";  //CEID  默认为打开
+    tcpData_1_2[51] = "312620700";  //CEID  默认为打开
     if(checked == false)
     {
-        tcpData_1_2[51] = "235867";  //CEID  关闭
+        tcpData_1_2[51] = "312620701";  //CEID  关闭
     }
     tcpData_1_2[52] = "N";   //RPTID
     //tcpData_1_2[53] = "N";   //RecipeNameEQ
@@ -388,6 +388,26 @@ void Widget::on_pushButton_Ch6_StepIndex6_clicked()
     tcpData_1_2[55] = ui->lineEdit_CH6_SLot->text();         //SlotID
     tcpData_1_2[56] = tcpData_1_2[54]+"#"+tcpData_1_2[55];   //WaferID
     tcpData_1_2[57] = ui->lineEdit_CH6_StepIndex->text();    //StepIndex
+    if(!m_tcpServer.getClientIds().isEmpty())
+    {
+        m_tcpServer.sendMessage(m_tcpServer.getClientIds()[0],tcpData_1_2.join(","));
+    }
+}
+
+void Widget::on_cb_chDstart_clicked(bool checked)
+{
+    tcpData_1_2[51] = "303070000";                                   //CEID  默认为打开
+    if(checked == false)
+    {
+        tcpData_1_2[51] = "303070001";                               //CEID  关闭
+        ui->lineEdit_CH4_StepIndex->setText("0");            //结束归零
+    }
+    tcpData_1_2[52] = "N";                                   //RPTID
+    tcpData_1_2[53] = "N";                                   //RecipeNameEQ
+    tcpData_1_2[54] = ui->lineEdit_CH4_Lot->text();          //LotID
+    tcpData_1_2[55] = ui->lineEdit_CH4_SLot->text();         //SlotID
+    tcpData_1_2[56] = tcpData_1_2[54]+"#"+tcpData_1_2[55];   //WaferID
+    tcpData_1_2[57] = ui->lineEdit_CH4_StepIndex->text();    //StepIndex
     if(!m_tcpServer.getClientIds().isEmpty())
     {
         m_tcpServer.sendMessage(m_tcpServer.getClientIds()[0],tcpData_1_2.join(","));

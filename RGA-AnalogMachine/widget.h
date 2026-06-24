@@ -49,6 +49,8 @@ private slots:
 
     void on_pushButton_Ch6_StepIndex6_clicked();
 
+    void on_cb_chDstart_clicked(bool checked);
+
 private:
     TcpServer m_tcpServer;
     TcpServer m_tcpServer_2;
