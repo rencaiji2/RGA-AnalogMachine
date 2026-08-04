@@ -19,6 +19,7 @@ public:
 
 private:
     TcpServer m_tcpServer;
+    TcpServer m_tcpServer_2;
     QTimer *m_sendTimer;
 
     void on_sendTimer_out();

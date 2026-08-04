@@ -77,6 +77,7 @@ QVector<int> TcpServer::getClientIds() const
 
 void TcpServer::incomingConnection(qintptr socketDescriptor)
 {
+    qDebug() << "incomingConnection 被调用, descriptor:" << socketDescriptor;
     ClientSocket *clientSocket = new ClientSocket(m_nextClientId++, this);
 
     if (clientSocket->setSocketDescriptor(socketDescriptor)) {

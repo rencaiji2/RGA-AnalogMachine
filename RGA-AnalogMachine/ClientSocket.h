@@ -24,6 +24,7 @@ protected slots:
 
 private:
     int m_id;
+    QByteArray m_buffer;
 };
 
 #endif // CLIENTSOCKET_H
