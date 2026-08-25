@@ -1,5 +1,6 @@
 #include "ClientSocket.h"
 #include <QDebug>
+#include <QDateTime>
 
 ClientSocket::ClientSocket(int id, QObject *parent)
     : QTcpSocket(parent), m_id(id)
@@ -35,14 +36,13 @@ static QByteArray makeSecsIIBodyForS1F2()
 static QByteArray makeSecsIIBodyForS1F4()
 {
     // S1F4 Selected Equipment Status Data: <L> <U4 11> <U4 12> </L>
-    // U4 format byte = 0x40 | (7<<2) | 0 = 0x5C, length 1 byte
     QByteArray body;
     body.append('\x01'); // List, 1-byte length
     body.append('\x02'); // 2 items
-    body.append('\x5C'); // U4, 1-byte length
+    body.append('\xB1'); // U4, 1-byte length (与Host编码一致)
     body.append('\x04'); // 4 bytes
     body.append(QByteArray("\x00\x00\x00\x0B", 4)); // value 11
-    body.append('\x5C'); // U4, 1-byte length
+    body.append('\xB1'); // U4, 1-byte length
     body.append('\x04'); // 4 bytes
     body.append(QByteArray("\x00\x00\x00\x0C", 4)); // value 12
     return body;
@@ -51,24 +51,102 @@ static QByteArray makeSecsIIBodyForS1F4()
 static QByteArray makeSecsIIBodyForS1F14()
 {
     // S1F14 Establish Communication Request ACK:
-    // <L>
-    //   <B>0</B>                         // COMMACK
-    //   <L><A>"10"</A></L>               // MDLN
-    // </L>
+    // <L[2]>
+    //   <B[1]> 0                         // COMMACK = 0 (OK)
+    //   <L[2]>
+    //     <A[2]> "10"                    // MDLN
+    //     <A[1]> "0"                     // SOFTREV
+    //   >
+    // >
     QByteArray body;
     body.append('\x01'); // List, 1-byte length
     body.append('\x02'); // 2 items
     // COMMACK = Binary 0
-    body.append('\x44'); // Binary, 1-byte length
+    body.append('\x21'); // Binary, 1-byte length (标准SECS-II格式码 0o10)
     body.append('\x01'); // 1 byte
     body.append('\x00'); // value 0
-    // MDLN list
+    // MDLN + SOFTREV list
     body.append('\x01'); // List, 1-byte length
-    body.append('\x01'); // 1 item
+    body.append('\x02'); // 2 items
     body.append('\x41'); // ASCII, 1-byte length
     body.append('\x02'); // 2 bytes
     body.append("10");
+    body.append('\x41'); // ASCII, 1-byte length
+    body.append('\x01'); // 1 byte
+    body.append("0");
     return body;
+}
+
+// ---------------------------------------------------------------------------
+// SECS-II 编码辅助函数
+// ---------------------------------------------------------------------------
+
+// 构造 <B[1]> val
+static QByteArray makeBinary1(quint8 val)
+{
+    QByteArray b;
+    b.append('\x21'); // Binary, 1-byte length (标准SECS-II格式码 0o10)
+    b.append('\x01');
+    b.append((char)val);
+    return b;
+}
+
+// 构造 <A "str">
+static QByteArray makeAscii(const QString &str)
+{
+    QByteArray b;
+    QByteArray utf8 = str.toUtf8();
+    b.append('\x41'); // ASCII, 1-byte length
+    b.append((char)utf8.size());
+    b.append(utf8);
+    return b;
+}
+
+// ---------------------------------------------------------------------------
+// 新增 SxFy 回复消息体
+// ---------------------------------------------------------------------------
+
+// S1F16 Offline Acknowledge: <B[1]> 0 (OFACK=0)
+static QByteArray makeSecsIIBodyForS1F16()
+{
+    return makeBinary1(0x00);
+}
+
+// S1F18 Online Acknowledge: <B[1]> 0 (ONLACK=0)
+static QByteArray makeSecsIIBodyForS1F18()
+{
+    return makeBinary1(0x00);
+}
+
+// S2F18 Date and Time Data: <A "YYYYMMDDHHMMSS">
+static QByteArray makeSecsIIBodyForS2F18()
+{
+    QString timeStr = QDateTime::currentDateTime().toString("yyyyMMddHHmmss");
+    return makeAscii(timeStr);
+}
+
+// S2F32 Date and Time Set Acknowledge: <B[1]> 0 (TIACK=0)
+static QByteArray makeSecsIIBodyForS2F32()
+{
+    return makeBinary1(0x00);
+}
+
+// S2F34 Define Report Acknowledge: <B[1]> 0 (DRACK=0)
+static QByteArray makeSecsIIBodyForS2F34()
+{
+    return makeBinary1(0x00);
+}
+
+// S2F36 Link Event Report Acknowledge: <B[1]> 0 (LRACK=0)
+static QByteArray makeSecsIIBodyForS2F36()
+{
+    return makeBinary1(0x00);
+}
+
+// S2F38 Enable/Disable Event Report Acknowledge: <B[1]> 0 (ERACK=0)
+static QByteArray makeSecsIIBodyForS2F38()
+{
+    return makeBinary1(0x00);
 }
 
 void ClientSocket::onReadyRead()
@@ -129,8 +207,15 @@ void ClientSocket::onReadyRead()
             // 兼容两种 HSMS 头布局：
             // 1) 标准：SType 在 byte3（Select.req=0x01）
             // 2) 该包装库：SType 在 byte5
-            bool isSelectReq = ((byte3 & 0x7F) == 0x01) || (byte5 == 0x01);
-            if (isSelectReq) {
+            quint8 sType = 0xFF;
+            if ((byte3 & 0x7F) != 0) {
+                sType = byte3 & 0x7F;
+            } else if (byte5 != 0) {
+                sType = byte5;
+            }
+
+            // Select.req (SType=1) → Select.rsp (SType=2)
+            if (sType == 0x01) {
                 qDebug() << "收到 Select.req，回复 Select.rsp";
                 QByteArray rspHeader = msg.left(10);
                 if ((byte3 & 0x7F) == 0x01) {
@@ -142,10 +227,40 @@ void ClientSocket::onReadyRead()
                 QByteArray packet = makeHsmsPacket(rspHeader, QByteArray());
                 write(packet);
                 qDebug() << "发送 Select.rsp(hex):" << packet.toHex(' ');
-                continue;
             }
-
-            qDebug() << "收到其他 HSMS 控制消息";
+            // Linktest.req (SType=5) → Linktest.rsp (SType=6)
+            else if (sType == 0x05) {
+                qDebug() << "收到 Linktest.req，回复 Linktest.rsp";
+                QByteArray rspHeader = msg.left(10);
+                if (byte5 == 0x05) {
+                    rspHeader[5] = 0x06;
+                } else {
+                    rspHeader[3] = 0x06;
+                }
+                QByteArray packet = makeHsmsPacket(rspHeader, QByteArray());
+                write(packet);
+                qDebug() << "发送 Linktest.rsp(hex):" << packet.toHex(' ');
+            }
+            // Deselect.req (SType=3) → Deselect.rsp (SType=4)
+            else if (sType == 0x03) {
+                qDebug() << "收到 Deselect.req，回复 Deselect.rsp";
+                QByteArray rspHeader = msg.left(10);
+                if (byte5 == 0x03) {
+                    rspHeader[5] = 0x04;
+                } else {
+                    rspHeader[3] = 0x04;
+                }
+                QByteArray packet = makeHsmsPacket(rspHeader, QByteArray());
+                write(packet);
+                qDebug() << "发送 Deselect.rsp(hex):" << packet.toHex(' ');
+            }
+            // Separate.req (SType=9) — 不需要回复
+            else if (sType == 0x09) {
+                qDebug() << "收到 Separate.req，对端主动断开";
+            }
+            else {
+                qDebug() << "收到其他 HSMS 控制消息, SType=" << sType;
+            }
             continue;
         }
 
@@ -173,6 +288,9 @@ void ClientSocket::onReadyRead()
         replyHeader[9] = sysBytes[3];
 
         QByteArray replyBody;
+        bool handled = true;
+
+        // --- S1 通信状态 ---
         if (stream == 1 && function == 1) {
             replyHeader[3] = 0x02; // S1F2
             replyBody = makeSecsIIBodyForS1F2();
@@ -185,8 +303,41 @@ void ClientSocket::onReadyRead()
             replyHeader[3] = 0x0E; // S1F14
             replyBody = makeSecsIIBodyForS1F14();
         }
+        else if (stream == 1 && function == 15) {
+            replyHeader[3] = 0x10; // S1F16
+            replyBody = makeSecsIIBodyForS1F16();
+        }
+        else if (stream == 1 && function == 17) {
+            replyHeader[3] = 0x12; // S1F18
+            replyBody = makeSecsIIBodyForS1F18();
+        }
+        // --- S2 设备控制/数据采集 ---
+        else if (stream == 2 && function == 17) {
+            replyHeader[3] = 0x12; // S2F18 时间查询回复
+            replyBody = makeSecsIIBodyForS2F18();
+        }
+        else if (stream == 2 && function == 31) {
+            replyHeader[3] = 0x20; // S2F32 时间设置回复
+            replyBody = makeSecsIIBodyForS2F32();
+        }
+        else if (stream == 2 && function == 33) {
+            replyHeader[3] = 0x22; // S2F34 定义报告回复
+            replyBody = makeSecsIIBodyForS2F34();
+        }
+        else if (stream == 2 && function == 35) {
+            replyHeader[3] = 0x24; // S2F36 关联事件报告回复
+            replyBody = makeSecsIIBodyForS2F36();
+        }
+        else if (stream == 2 && function == 37) {
+            replyHeader[3] = 0x26; // S2F38 使能事件报告回复
+            replyBody = makeSecsIIBodyForS2F38();
+        }
         else {
+            handled = false;
             qDebug() << "暂未实现 S" << stream << "F" << function << " 的自动回复";
+        }
+
+        if (!handled) {
             continue;
         }
 
